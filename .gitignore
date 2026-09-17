@@ -34,10 +34,10 @@ build/
 .env.local
 
 # Raw data (DO NOT COMMIT)
-data/raw/*.csv
-data/raw/home-credit/
+data/*.csv
 
 # Temporary files
 *.tmp
 *.temp
 *.log
+*.zip
