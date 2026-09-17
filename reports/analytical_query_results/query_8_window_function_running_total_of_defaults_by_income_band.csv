@@ -1,0 +1,5 @@
+income_band,n_applicants,defaults,default_rate,running_default_total
+100k - 250k,204035,17054.0,8.36,17054.0
+250k - 500k,37076,2400.0,6.47,19454.0
+< 100k,63698,5225.0,8.2,24679.0
+> 500k,2702,146.0,5.4,24825.0

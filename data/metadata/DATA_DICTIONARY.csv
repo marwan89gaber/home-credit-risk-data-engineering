@@ -1,0 +1,34 @@
+Column_Name,Data_Type,Source_Table,Description,Formula_Aggregation,Missing_Rate_%,Business_Logic
+SK_ID_CURR,integer,application_train,Unique applicant identifier,N/A,0.0,"Primary key, links to all other tables"
+TARGET,binary (0/1),application_train,Loan default indicator,"1 = default, 0 = repaid",0.0,Target variable for classification. 8.09% default rate (highly imbalanced)
+AMT_INCOME_TOTAL,float,application_train,Annual gross income,N/A (raw),0.0,Client's total annual income in currency units
+AMT_CREDIT,float,application_train,Credit amount of the loan,N/A (raw),0.0,Principal amount of the requested loan
+AMT_ANNUITY,float,application_train,Loan annuity,N/A (raw),0.0,Annual fixed payment amount
+DAYS_BIRTH,integer,application_train,Client age in days (negative),N/A (raw),0.0,Days from reference date to birth. Negative value. Use -DAYS_BIRTH/365.25 for age in years
+DAYS_EMPLOYED,integer,application_train,"Days employed (negative, 365243 = unknown)",365243 values treated as NaN,3.67,Days client has been employed. 365243 is placeholder for unemployed/unknown
+DAYS_REGISTRATION,integer,application_train,Days since client registration,N/A (raw),0.0,Age of ID registration in days
+DAYS_ID_PUBLISH,integer,application_train,Days since ID was published,N/A (raw),0.0,Age of ID document in days
+NAME_EDUCATION_TYPE,categorical,application_train,Education level,N/A (raw),0.0,"Client's education: Secondary, Higher, Incomplete higher, Lower secondary, Academic degree"
+CODE_GENDER,categorical,application_train,Gender (M/F/XNA),N/A (raw),0.0,"M=Male, F=Female, XNA=Not available"
+BUREAU_CREDIT_COUNT,integer,bureau (aggregated),Number of bureau credit records,COUNT(DISTINCT SK_ID_BUREAU) GROUP BY SK_ID_CURR,0.0,Total number of credit accounts in bureau. Higher = more credit history
+BUREAU_ACTIVE_COUNT,integer,bureau (aggregated),Number of active bureau accounts,SUM(CASE WHEN CREDIT_ACTIVE='Active' THEN 1 ELSE 0 END),0.0,Currently open credit accounts
+BUREAU_CLOSED_COUNT,integer,bureau (aggregated),Number of closed bureau accounts,SUM(CASE WHEN CREDIT_ACTIVE='Closed' THEN 1 ELSE 0 END),0.0,Completed credit accounts
+BUREAU_CREDIT_SUM,float,bureau (aggregated),Total bureau credit sum,SUM(AMT_CREDIT_SUM),0.0,Sum of all credit amounts in bureau records
+BUREAU_DEBT_SUM,float,bureau (aggregated),Total bureau debt,SUM(AMT_CREDIT_SUM_DEBT),0.0,Sum of outstanding balances in bureau records
+BUREAU_OVERDUE_SUM,float,bureau (aggregated),Total overdue amount in bureau,SUM(AMT_CREDIT_SUM_OVERDUE),0.0,Sum of overdue amounts. High value = risk signal
+BUREAU_OVERDUE_MEAN,float,bureau (aggregated),Average overdue amount in bureau,AVG(AMT_CREDIT_SUM_OVERDUE),0.0,Average overdue per bureau record
+BUREAU_OVERDUE_MAX,float,bureau (aggregated),Maximum overdue amount in bureau,MAX(AMT_CREDIT_SUM_OVERDUE),0.0,Worst-case overdue. Strong default predictor
+PREV_APPLICATION_COUNT,integer,previous_application (aggregated),Number of previous credit applications,COUNT(*) WHERE DAYS_DECISION <= 0,0.0,Pre-decision applications only (leakage filter applied). Previous interaction with lender
+PREV_APPROVED_COUNT,integer,previous_application (aggregated),Number of approved previous applications,SUM(CASE WHEN NAME_CONTRACT_STATUS='Approved' THEN 1 ELSE 0 END),0.0,How many past applications were approved
+PREV_REFUSED_COUNT,integer,previous_application (aggregated),Number of refused previous applications,SUM(CASE WHEN NAME_CONTRACT_STATUS='Refused' THEN 1 ELSE 0 END),0.0,Past rejections. May indicate creditworthiness issues
+PREV_CREDIT_MEAN,float,previous_application (aggregated),Average credit amount from previous applications,AVG(AMT_CREDIT),0.0,Typical loan size in past applications
+PREV_APPROVAL_RATE,float (percent),previous_application (aggregated),Approval rate of previous applications,SUM(approved) / COUNT(*) * 100,0.0,Percentage of past applications that were approved. Higher = better credit history
+POS_CREDIT_COUNT,integer,POS_CASH_balance (aggregated),Number of POS credits,COUNT(DISTINCT SK_ID_PREV),0.0,Number of point-of-sale credit facilities
+POS_DPD_MEAN,float,POS_CASH_balance (aggregated),Average days past due (POS),AVG(SK_DPD),0.0,"Average delinquency on POS credits. Negative = on-time, positive = late"
+POS_DPD_MAX,float,POS_CASH_balance (aggregated),Maximum days past due (POS),MAX(SK_DPD),0.0,Worst delinquency on any POS credit
+CC_CREDIT_COUNT,integer,credit_card_balance (aggregated),Number of credit cards,COUNT(DISTINCT SK_ID_PREV),0.0,Number of credit card accounts
+CC_BALANCE_MEAN,float,credit_card_balance (aggregated),Average credit card balance,AVG(AMT_BALANCE),0.0,Typical monthly balance on credit cards
+CC_LIMIT_MEAN,float,credit_card_balance (aggregated),Average credit card limit,AVG(AMT_CREDIT_LIMIT_ACTUAL),0.0,Typical credit limit. Higher limit = better credit profile
+INSTALMENT_PAYMENT_COUNT,integer,installments_payments (aggregated),Number of installment payments,COUNT(*),0.0,Total number of payment records across all installments
+INSTALMENT_DELAY_MEAN,float,installments_payments (aggregated),Average payment delay in days,AVG(ABS(DAYS_ENTRY_PAYMENT - DAYS_INSTALMENT)),0.0,"On average, how many days late/early. Positive = late payments"
+INSTALMENT_LATE_COUNT,integer,installments_payments (aggregated),Count of late payments,SUM(CASE WHEN PAYMENT_DELAY > 0 THEN 1 ELSE 0 END),0.0,Number of installments paid after due date

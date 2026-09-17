@@ -1,0 +1,11 @@
+SK_ID_CURR,TARGET,n_accounts,active_accounts,closed_accounts,max_overdue,total_overdue,bureau_health_category
+100002,1,8,2.0,6.0,0.0,0.0,Low Risk
+100009,0,18,4.0,14.0,0.0,0.0,Moderate Risk
+100014,0,8,2.0,6.0,0.0,0.0,Low Risk
+100016,0,7,4.0,3.0,0.0,0.0,Moderate Risk
+100017,0,6,0.0,6.0,0.0,0.0,Low Risk
+100023,0,13,4.0,9.0,0.0,0.0,Moderate Risk
+100030,0,6,2.0,4.0,0.0,0.0,Low Risk
+100031,1,7,3.0,4.0,0.0,0.0,Low Risk
+100035,0,9,5.0,4.0,0.0,0.0,Moderate Risk
+100037,0,8,1.0,7.0,0.0,0.0,Low Risk
